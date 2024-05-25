@@ -75,3 +75,6 @@ def category(request, name):
     except:
         messages.error(request, "This category doesn't exist")
         return redirect('home')
+    
+def category_summary(request):
+    return render(request, 'category_summary.html', {})

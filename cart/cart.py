@@ -11,17 +11,6 @@ class Cart():
 
         self.cart = cart
 
-    def add(self, product, quantity):
-        product_id = str(product.id)
-        quantity = str(quantity)
-
-        if product_id in self.cart:
-            pass
-        else:
-            self.cart[product_id] = int(quantity)
-
-        self.session.modified = True
-
     def __len__(self):
         return len(self.cart)
     
@@ -34,3 +23,50 @@ class Cart():
     def get_quantities(self):
         quantities = self.cart
         return quantities
+    
+    def add(self, product, quantity):
+        product_id = str(product.id)
+        quantity = str(quantity)
+
+        if product_id in self.cart:
+            pass
+        else:
+            self.cart[product_id] = int(quantity)
+
+        self.session.modified = True
+        return self.cart
+
+    def delete(self, product_id):
+        product_id = str(product_id)
+
+        if product_id in self.cart:
+            del self.cart[product_id]
+        
+        self.session.modified = True
+        return self.cart
+
+    def update(self, product_id, quantity):
+        product_id = str(product_id)
+        quantity = int(quantity)
+
+        cart = self.cart
+        cart[product_id] = quantity
+
+        self.session.modified = True
+        return self.cart
+    
+    def total(self):
+        product_ids = self.cart.keys()
+        products = Product.objects.filter(id__in=product_ids)
+        cart = self.cart
+
+        total = 0
+        for key, value in cart.items():
+            key = int(key)
+            product = products.filter(id=key).first()
+            if product.is_sale:
+                total += product.sale_price * value
+            else:
+                total += product.price * value
+
+        return total
