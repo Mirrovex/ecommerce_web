@@ -23,13 +23,51 @@
                         {% else %}
                             ${{ product.price }}
                         {% endif %}
+                        <br><br>
+                            <div class="row justify-content-center">
+                                <div class="col-md-2">Quantity:</div>
+                                <div class="col-md-2">
+                                    <select id="quantity" class="form-select form-select-sm">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
                         <br>
                         <a href="{% url 'home' %}" class="btn btn-secondary float-right">Back</a>
+                        <button type="button" id="cart_add" value="{{ product.id }}" class="btn btn-secondary">Add to cart</button>
                     </center>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).on('click', '#cart_add', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'cart_add' %}",
+            data: {
+                product_id: $('#cart_add').val(),
+                quantity: $('#quantity option:selected').text(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post'
+            },
+
+            success: function(response) {
+                // console.log(response)
+                document.getElementById('cart_quantity').textContent = response.quantity;
+            },
+            error: function(xhr, errmsg, err) {
+
+            }
+        });
+    });
+</script>
 
 {% endblock content %}
