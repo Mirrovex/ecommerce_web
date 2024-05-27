@@ -24,3 +24,7 @@ def shipping(request):
     
     messages.error(request, "You must be logged in to access this page")
     return redirect('home')
+
+
+def checkout(request):
+    return render(request, 'checkout.html', {})

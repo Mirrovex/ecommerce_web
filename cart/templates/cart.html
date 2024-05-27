@@ -63,7 +63,10 @@
                     </div>
                 </div>
             {% endfor %}
-            <h3>Total: ${{ total }}</h3>
+            <div class="flexrow" style="justify-content: space-between;">
+                <h3>Total: ${{ total }}</h3>
+                <a href="{% url 'checkout' %}" class="btn btn-success float-right">Checkout</a>
+            </div>
             <br><br>
         {% else %}
             <h1>There is nothing in your cart</h1>

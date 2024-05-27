@@ -92,6 +92,15 @@
   }
 }
 
+.flexrow {
+  display: flex;
+  flex-direction: row;
+}
+.flexcol {
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
