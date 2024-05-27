@@ -6,10 +6,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link {% if active_tab == 'home' %}active{% endif %}" aria-current="page" href="{% url 'home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if active_tab == 'home' %}active{% endif %}" aria-current="page" href="{% url 'search' %}">Search</a></li>
                 
                 <li class="nav-item"><a class="nav-link {% if active_tab == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a></li>
                 {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link {% if active_tab == 'update_user' %}active{% endif %}" href="{% url 'update_user' %}">Profile</a></li> -->
+                    <li class="nav-item dropdown {% if active_tab == 'category' %}active{% endif %}">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Profile</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'update_user' %}">Update User</a></li>
+                            <li><a class="dropdown-item" href="{% url 'update_info' %}">Update Info</a></li>
+                        </ul>
+                    </li>
                 {% else %}
                     <li class="nav-item"><a class="nav-link {% if active_tab == 'login' %}active{% endif %}" href="{% url 'login' %}">Login</a></li>
                     <li class="nav-item"><a class="nav-link {% if active_tab == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a></li>
@@ -18,7 +27,7 @@
                 <li class="nav-item dropdown {% if active_tab == 'category' %}active{% endif %}">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{% url 'home' %}">All Products</a></li>
+                        <li><a class="dropdown-item" href="{% url 'category_summary' %}">All Products</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         
                         {% for category in categories %}

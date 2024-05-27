@@ -4,14 +4,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
+from django.db.models import Q
 
-from .models import Product, Category
-from .forms import SignupForm
+from .models import Product, Category, Customer
+from .forms import SignupForm, UpdateProfile, UpdatePassword, UpdateInfo
 
 
 def home(request):
     products = Product.objects.all()
-    return render(request, 'index.html', {'products': products})
+    return render(request, 'home.html', {'products': products})
 
 
 def about(request):
@@ -53,11 +54,64 @@ def register_user(request):
             if user:
                 login(request, user)
                 messages.success(request, "Account created, you have been logged in")
-                return redirect('home')
+                return redirect('update_info')
             
         messages.error(request, "There was a problem with registering")
 
     return render(request, 'register.html', {'form': form})
+
+
+def update_user(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = UpdateProfile(request.POST or None, instance=user)
+
+        if form.is_valid():
+            form.save()
+
+            login(request, user)
+            messages.success(request, "Profile has been updated")
+            return redirect('home')
+            
+        return render(request, 'update_user.html', {'form': form})
+    
+    messages.error(request, "You must be logged in to access this page")
+    return redirect('home')
+
+
+def update_info(request):
+    if request.user.is_authenticated:
+        user = Customer.objects.get(user=request.user)
+        form = UpdateInfo(request.POST or None, instance=user)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Profile has been updated")
+            return redirect('update_info')
+            
+        return render(request, 'update_info.html', {'form': form})
+    
+    messages.error(request, "You must be logged in to access this page")
+    return redirect('home')
+    
+
+def update_password(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = UpdatePassword(user, request.POST or None)
+
+        if form.is_valid():
+            form.save()
+
+            login(request, user)
+            messages.success(request, "Password has been updated")
+            return redirect('update_user')
+
+        return render(request, 'update_password.html', {'form': form})
+    
+    messages.error(request, "You must be logged in to access this page")
+    return redirect('home')
 
 
 def product(request, id):
@@ -78,3 +132,14 @@ def category(request, name):
     
 def category_summary(request):
     return render(request, 'category_summary.html', {})
+
+
+def search(request):
+    if request.method == 'POST':
+        search = request.POST['search']
+        products = Product.objects.filter(Q(name__icontains=search) | Q(description__icontains=search))
+        if not products:
+            messages.error(request, "Product not found")
+        return render(request, "search.html", {'search': search, 'products': products})
+
+    return render(request, "search.html", {})

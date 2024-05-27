@@ -61,12 +61,12 @@ class Cart():
         cart = self.cart
 
         total = 0
+        total_sale = None
         for key, value in cart.items():
             key = int(key)
             product = products.filter(id=key).first()
             if product.is_sale:
                 total += product.sale_price * value
-            else:
-                total += product.price * value
+            total += product.price * value
 
-        return total
+        return total, total_sale
