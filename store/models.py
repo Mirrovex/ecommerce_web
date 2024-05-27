@@ -15,6 +15,7 @@ class Category(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cart = models.CharField(max_length=200, blank=True, null=True)
 
     phone = models.CharField(max_length=20, blank=True)
     address1 = models.CharField(max_length=100, blank=True)

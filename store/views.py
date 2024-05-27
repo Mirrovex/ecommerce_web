@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserChangeForm
-from django import forms
 from django.db.models import Q
 
+import json
+
 from .models import Product, Category, Customer
-from .forms import SignupForm, UpdateProfile, UpdatePassword, UpdateInfo
+from .forms import SignupForm, UpdateProfile, UpdatePassword
+from cart.cart import Cart
 
 
 def home(request):
@@ -27,6 +27,15 @@ def login_user(request):
 
         if user:
             login(request, user)
+
+            customer = Customer.objects.get(user=request.user)
+            if customer.cart:
+                saved_cart = json.loads(customer.cart)
+                cart = Cart(request)
+
+                for key, value in saved_cart.items():
+                    cart.add(key, value)
+
             messages.success(request, "You have been logged in")
             return redirect('home')
         
@@ -74,23 +83,6 @@ def update_user(request):
             return redirect('home')
             
         return render(request, 'update_user.html', {'form': form})
-    
-    messages.error(request, "You must be logged in to access this page")
-    return redirect('home')
-
-
-def update_info(request):
-    if request.user.is_authenticated:
-        user = Customer.objects.get(user=request.user)
-        form = UpdateInfo(request.POST or None, instance=user)
-
-        if form.is_valid():
-            form.save()
-
-            messages.success(request, "Profile has been updated")
-            return redirect('update_info')
-            
-        return render(request, 'update_info.html', {'form': form})
     
     messages.error(request, "You must be logged in to access this page")
     return redirect('home')

@@ -61,28 +61,6 @@ class UpdateProfile(UserChangeForm):
                 field.widget.attrs['class'] += ' is-invalid'
 
 
-class UpdateInfo(forms.ModelForm):
-    phone = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone'}), required=False)
-    address1 = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address 1'}), required=False)
-    address2 = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address 2'}), required=False)
-    country = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'}), required=False)
-    city = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}), required=False)
-    state = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'State'}), required=False)
-    zipcode = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zipcode'}), required=False)
-
-    class Meta:
-        model = Customer
-        fields = ('phone', 'address1', 'address2', 'country', 'city', 'state', 'zipcode')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        for field_name, field in self.fields.items():
-            if self.errors.get(field_name):
-                field.widget.attrs['class'] += ' is-invalid'
-
-
-
 class UpdatePassword(SetPasswordForm):
     class Meta:
         model = User
